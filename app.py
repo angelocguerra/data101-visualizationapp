@@ -16,7 +16,7 @@ years = list(range(2006, 2016))
 app.layout = html.Div([
     dbc.Navbar(
         [
-            dbc.NavbarBrand("Philippine Education Dashboard", className="ml-1", style={"margin-left": "10px", "font-weight": "550"}),   # Align brand to the left
+            dbc.NavbarBrand("Philippine Education Dashboard", className="ml-1", style={"margin-left": "10px", "font-weight": "550"}),   
             dbc.Nav(
                 [
                     dbc.NavItem(dbc.NavLink("Home", href="#")),
@@ -64,7 +64,7 @@ app.layout = html.Div([
                 min=min(years),
                 max=max(years),
                 value=min(years),
-                marks={str(year): str(year) for year in years},  # Align years to the left
+                marks={str(year): str(year) for year in years}, 
                 step=None
             )
         ], style={'width': '30%', 'margin-left': '10px', 'margin-top': '20px'}),
