@@ -6,7 +6,7 @@ from dash.dependencies import Input, Output
 # Set the Bootstrap theme
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.MINTY])
 
-# Define regions, education levels, and metrics (placeholder data)
+# Define regions, education levels, and metrics (options)
 regions = ['NCR', 'Region 1', 'Region 2', 'Region 3', 'Region 4A', 'Region 4B', 'Region 5', 'Region 6', 'Region 7', 'Region 8', 'Region 9', 'Region 10', 'Region 11', 'Region 12', 'CAR', 'CARAGA', 'ARMM']
 education_levels = ['Primary', 'Secondary']
 education_metrics = ['Enrollment', 'Completion', 'Dropout']
@@ -14,6 +14,7 @@ years = list(range(2006, 2016))
 
 # Define layout
 app.layout = html.Div([
+    # Navbar
     dbc.Navbar(
         [
             dbc.NavbarBrand("Philippine Education Dashboard", className="ml-1", style={"margin-left": "10px", "font-weight": "550"}),   
@@ -28,17 +29,22 @@ app.layout = html.Div([
         color="primary",
         dark=True,
     ),
+    
+    # Filters
     html.H3("Filters"),
     html.Div([
+        # Regions
         html.Div([
             html.Label('Select Region:'),
             dcc.Dropdown(
                 id='region-dropdown',
                 options=[{'label': region, 'value': region} for region in regions],
-                value=regions[0]
+                value=regions[0],
+                multi=True,
             ),
         ], style={'width': '30%', 'margin-left': '10px'}),
         
+        # Education Level
         html.Div([
             html.Label('Select Education Level:'),
             dcc.Dropdown(
@@ -48,6 +54,7 @@ app.layout = html.Div([
             ),
         ], style={'width': '30%', 'margin-left': '10px'}),
         
+        # Education Metric
         html.Div([
             html.Label('Select Education Metric:'),
             dcc.Dropdown(
@@ -57,6 +64,7 @@ app.layout = html.Div([
             ),
         ], style={'width': '30%', 'margin-left': '10px'}),
         
+        # Year
         html.Div([
             html.Label('Select Year:'),
             dcc.Slider(
