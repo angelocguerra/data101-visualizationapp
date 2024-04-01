@@ -125,19 +125,40 @@ app.layout = html.Div([
         ]),
     #Bar Chart
     dbc.Row(children=[
-        
-      dbc.Col(children=[
+    dbc.Col(children=[
         dcc.Loading(id="bar-loading", children=[
+            dbc.Card(
+                [
+                    dbc.CardHeader(html.H3("Bar chart", className="mb-0", style={'color': 'black', 'background-color': 'white'})),
+                    dbc.CardBody(
+                        [
+                            html.Div([
+                                html.Div(style={'background-color': '#D5FBCB', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '5px'}),
+                                html.Label('Enrollments', style={'color': 'black'}),
+                            ]),
+                            html.Div([
+                                html.Div(style={'background-color': '#00E08F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '5px'}),
+                                html.Label('Completions', style={'color': 'black'}),
+                            ]),
+                            html.Div([
+                                html.Div(style={'background-color': '#23B37F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '5px'}),
+                                html.Label('Dropouts', style={'color': 'black'}),
+                            ]),
+                        ]
+                    ),
+                ],
+                style={"margin-bottom": "10px"}
+            ),
             dbc.Col(id='bar-chart-container')
         ])
-    ], width=4,style={'margin-left': '10px'})
+    ], width=4, style={'margin-left': '10px'})
     ,
     #Scatter Plot Chart
         dbc.Col(children=[
             dcc.Loading(id="scatter-loading", children=dcc.Graph(id='scatter-plot'))
         ], width=5)
     ]),
-    html.Div(id='output-container', style={'margin-top': '20px'})
+html.Div(id='output-container', style={'margin-top': '20px'})
 ])
 
 @app.callback(
@@ -414,6 +435,7 @@ def update_graph(regions_selected, educ_level_selected, educ_metric_selected, ye
     fig_list = update_bar_chart(regions_selected, educ_level_selected, educ_metric_selected, years_selected)
     graph_list = [dcc.Graph(figure=fig) for fig in fig_list]
     return graph_list
+
 # Run the app
 if __name__ == '__main__':
     app.run_server(debug=True)
