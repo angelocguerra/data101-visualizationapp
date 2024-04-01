@@ -167,16 +167,12 @@ html.Div(id='output-container', style={'margin-top': '20px'})
         Input('region-dropdown', 'value'),
         Input('education-level-dropdown', 'value'),
         Input('education-metric-dropdown', 'value'),
-        Input('year-slider', 'value')
     ]
 )
-def update_line_chart(regions_selected, educ_level_selected, educ_metric_selected, years_selected):
-   
+def update_line_chart(regions_selected, educ_level_selected, educ_metric_selected):
+    years_selected = [2006, 2015]  # Set default year range from 2006 to 2015
     years_range = list(range(years_selected[0], years_selected[1] + 1))
     years_as_strings = [str(year) for year in years_range]
-
-    if not isinstance(regions_selected, list):
-        regions_selected = [regions_selected]
 
     line_df = pd.DataFrame()
     # Determine which dataset to use based on education level and metric
@@ -219,20 +215,15 @@ def update_line_chart(regions_selected, educ_level_selected, educ_metric_selecte
         Input('region-dropdown', 'value'),
         Input('education-level-dropdown', 'value'),
         Input('education-metric-dropdown', 'value'),
-         Input('year-slider', 'value')
     ]
 )
-
-def update_scatter_plot(regions_selected, educ_level_selected, educ_metric_selected, years_selected):
-
+def update_scatter_plot(regions_selected, educ_level_selected, educ_metric_selected):
+    years_selected = [2006, 2015]  # Set default year range from 2006 to 2015
     years_range = list(range(years_selected[0], years_selected[1] + 1))
     years_as_strings = [str(year) for year in years_range]
 
-
-
     scatter_df = pd.DataFrame()
 
-  
     if educ_level_selected == 'Secondary':
         if educ_metric_selected == 'Enrollments':
             scatter_df = secondary_enrollment.loc[regions_selected, years_as_strings ]
