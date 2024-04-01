@@ -30,63 +30,64 @@ app.layout = html.Div([
         dark=True,
     ),
     
-    # Filters
-    html.H3("Filters"),
-    html.Div([
-        # Regions
-        html.Div([
-            html.Label('Select Region:'),
-            dcc.Dropdown(
-                id='region-dropdown',
-                options=[{'label': region, 'value': region} for region in regions],
-                value=regions[0],
-                multi=True,
+    # Filters Card
+    dbc.Card(
+        [
+            dbc.CardHeader(html.H3("Filters", className="mb-0", style={'color': 'black'})),
+            dbc.CardBody(
+                [
+                    # Regions
+                    html.Div([
+                        html.Label('Select Region:', style={'color': 'black'}),  # Change font color to black
+                        dcc.Dropdown(
+                            id='region-dropdown',
+                            options=[{'label': region, 'value': region} for region in regions],
+                            value=regions[0],
+                            multi=True,
+                        ),
+                    ], style={'margin-bottom': '10px'}),
+                    
+                    # Education Level
+                    html.Div([
+                        html.Label('Select Education Level:', style={'color': 'black'}),  # Change font color to black
+                        dcc.Dropdown(
+                            id='education-level-dropdown',
+                            options=[{'label': level, 'value': level} for level in education_levels],
+                            value=education_levels[0]
+                        ),
+                    ], style={'margin-bottom': '10px'}),
+                    
+                    # Education Metric
+                    html.Div([
+                        html.Label('Select Education Metric:', style={'color': 'black'}),  # Change font color to black
+                        dcc.Dropdown(
+                            id='education-metric-dropdown',
+                            options=[{'label': metric, 'value': metric} for metric in education_metrics],
+                            value=education_metrics[0]
+                        ),
+                    ], style={'margin-bottom': '10px'}),
+                    
+                    # Year
+                    html.Div([
+                        html.Label('Select Year Range:', style={'color': 'black'}),  # Change font color to black
+                        dcc.RangeSlider(
+                            id='year-slider',
+                            min=min(years),
+                            max=max(years),
+                            value=[min(years), max(years)],  # Default range from min to max years
+                            marks={str(year): str(year) for year in years}, 
+                            step=None,  # Allow any step within the range
+                        )
+                    ], style={'margin-bottom': '10px'}),
+                ]
             ),
-        ], style={'width': '30%', 'margin-left': '10px'}),
-        
-        # Education Level
-        html.Div([
-            html.Label('Select Education Level:'),
-            dcc.Dropdown(
-                id='education-level-dropdown',
-                options=[{'label': level, 'value': level} for level in education_levels],
-                value=education_levels[0]
-            ),
-        ], style={'width': '30%', 'margin-left': '10px'}),
-        
-        # Education Metric
-        html.Div([
-            html.Label('Select Education Metric:'),
-            dcc.Dropdown(
-                id='education-metric-dropdown',
-                options=[{'label': metric, 'value': metric} for metric in education_metrics],
-                value=education_metrics[0]
-            ),
-        ], style={'width': '30%', 'margin-left': '10px'}),
-        
-        # Year
-        html.Div([
-            html.Label('Select Year:'),
-            dcc.Slider(
-                id='year-slider',
-                min=min(years),
-                max=max(years),
-                value=min(years),
-                marks={str(year): str(year) for year in years}, 
-                step=None
-            )
-        ], style={'width': '30%', 'margin-left': '10px', 'margin-top': '20px'}),
-    ]),
+        ],
+        style={"width": "30%", "margin": "20px", "background-color": "#C3DCBC"},  # Set card color to C3DCBC
+    ),
+    
     html.Div(id='output-container', style={'margin-top': '20px'})
 ])
 
 # Run the app
 if __name__ == '__main__':
     app.run_server(debug=True)
-
-
-
-
-
-
-
