@@ -187,7 +187,7 @@ def update_line_chart(regions_selected, educ_level_selected, educ_metric_selecte
     fig = px.line(line_df, 
                   x='index', 
                   y=educ_metric_selected,
-                  title=f'{educ_metric_selected} {educ_level_selected} Rates by Region',
+                  title=f'{educ_level_selected} {educ_metric_selected} Rates by Region',
                   labels={'index': 'Year', educ_metric_selected: educ_metric_selected},
                   color='Region',
                   color_discrete_map={region: px.colors.qualitative.Plotly[i] for i, region in enumerate(regions_selected)}
@@ -206,24 +206,55 @@ def update_line_chart(regions_selected, educ_level_selected, educ_metric_selecte
 )
 
 def update_scatter_plot(regions_selected, educ_level_selected, educ_metric_selected, years_selected):
-   
+
     years_range = list(range(years_selected[0], years_selected[1] + 1))
     years_as_strings = [str(year) for year in years_range]
 
+    print(regions_selected)
+    print(educ_level_selected)
+    print(educ_metric_selected)
+    print(years_as_strings)
+
     scatter_df = pd.DataFrame()
-    # Use poverty incidence data for the scatter plot
-    scatter_df = poverty_incidence.loc[regions_selected, years_as_strings]
+
+  
+    if educ_level_selected == 'Secondary':
+        if educ_metric_selected == 'Enrollments':
+            scatter_df = secondary_enrollment.loc[regions_selected, years_as_strings ]
+        elif educ_metric_selected == 'Completions':
+            scatter_df = secondary_completion.loc[regions_selected, years_as_strings ]
+        elif educ_metric_selected == 'Dropouts':
+            scatter_df = secondary_dropout.loc[regions_selected, years_as_strings ]
+
+    elif educ_level_selected == 'Primary':
+        if educ_metric_selected == 'Enrollments':
+            scatter_df = primary_enrollment.loc[regions_selected, years_as_strings]
+        elif educ_metric_selected == 'Completions':
+            scatter_df = primary_completion.loc[regions_selected, years_as_strings]
+        elif educ_metric_selected == 'Dropouts':
+            scatter_df = primary_dropout.loc[regions_selected, years_as_strings ]
+   
+ 
+    poverty_df = poverty_incidence.loc[regions_selected, years_as_strings]
+
 
     scatter_df = scatter_df.T
-    scatter_df = scatter_df.reset_index().melt(id_vars='index', var_name='Region', value_name='Poverty Incidence')
-    scatter_df['index'] = scatter_df['index'].astype(str) 
+    scatter_df = scatter_df.reset_index().melt(id_vars='index', var_name='Region', value_name=educ_metric_selected)
+    scatter_df['index'] = scatter_df['index'].astype(str)
     
+    poverty_df = poverty_df.T
+    poverty_df = poverty_df.reset_index().melt(id_vars='index', var_name='Region', value_name='Poverty Incidence')
+    poverty_df['index'] = poverty_df['index'].astype(str)
+    
+    
+    combined_df = scatter_df.merge(poverty_df, on=['index', 'Region'])
+
     # Plotly express scatter plot
-    fig = px.scatter(scatter_df, 
-                     x='index', 
+    fig = px.scatter(combined_df, 
+                     x=educ_metric_selected,
                      y='Poverty Incidence',
-                     title='Poverty Incidence Rates by Region',
-                     labels={'index': 'Year', 'Poverty Incidence': 'Poverty Incidence'},
+                     title=f'Poverty Incidence Rates and {educ_level_selected} {educ_metric_selected} Rates by Region',
+                     labels={educ_metric_selected: educ_metric_selected, 'Poverty Incidence': 'Poverty Incidence'},
                      color='Region',
                      color_discrete_map={region: px.colors.qualitative.Plotly[i] for i, region in enumerate(regions_selected)}
                     )
