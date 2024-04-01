@@ -130,7 +130,7 @@ app.layout = html.Div([
         dcc.Loading(id="bar-loading", children=[
             dbc.Col(id='bar-chart-container')
         ])
-    ], width=4)
+    ], width=4,style={'margin-left': '10px'})
     ,
     #Scatter Plot Chart
         dbc.Col(children=[
@@ -154,12 +154,9 @@ def update_line_chart(regions_selected, educ_level_selected, educ_metric_selecte
     years_range = list(range(years_selected[0], years_selected[1] + 1))
     years_as_strings = [str(year) for year in years_range]
 
-    print(regions_selected)
-    print(educ_level_selected)
-    print(educ_metric_selected)
-    print(years_as_strings)
+    if not isinstance(regions_selected, list):
+        regions_selected = [regions_selected]
 
-    
     line_df = pd.DataFrame()
     # Determine which dataset to use based on education level and metric
     if educ_level_selected == 'Secondary':
@@ -210,10 +207,7 @@ def update_scatter_plot(regions_selected, educ_level_selected, educ_metric_selec
     years_range = list(range(years_selected[0], years_selected[1] + 1))
     years_as_strings = [str(year) for year in years_range]
 
-    print(regions_selected)
-    print(educ_level_selected)
-    print(educ_metric_selected)
-    print(years_as_strings)
+
 
     scatter_df = pd.DataFrame()
 
@@ -263,14 +257,16 @@ def update_scatter_plot(regions_selected, educ_level_selected, educ_metric_selec
 
 def update_bar_chart(regions_selected, educ_level_selected, educ_metric_selected, years_selected):
 
-    regions_selected = ['Region I', 'Region II', 'Region III', 'Region IV-A', 'Region IV-B']
-    educ_level_selected = 'Secondary'
-    educ_metric_selected = 'Enrollments'
-    years_as_strings  = ['2006', '2007', '2008', '2009', '2010']
-   
+    if not isinstance(regions_selected, list):
+        regions_selected = [regions_selected]
+
     years_range = list(range(years_selected[0], years_selected[1] + 1))
     years_as_strings = [str(year) for year in years_range]
 
+    print(regions_selected)
+    print(educ_level_selected)
+    print(educ_metric_selected)
+    print(years_as_strings)
     
     bar_enrollment_df = pd.DataFrame()
     bar_completion_df  = pd.DataFrame()
@@ -287,15 +283,21 @@ def update_bar_chart(regions_selected, educ_level_selected, educ_metric_selected
             bar_completion_df  = primary_completion.loc[regions_selected, years_as_strings]
             bar_dropout_df  = primary_dropout.loc[regions_selected, years_as_strings ]
 
+    bar_completion_df = pd.DataFrame(bar_completion_df)
     bar_completion_df = pd.DataFrame(bar_completion_df.mean(axis=1).round(1), columns=['Completions'])
+
+    bar_dropout_df = pd.DataFrame(bar_dropout_df )
     bar_dropout_df = pd.DataFrame(bar_dropout_df.mean(axis=1).round(1), columns=['Dropouts'])
+
+    bar_enrollment_df = pd.DataFrame(bar_enrollment_df)
     bar_enrollment_df = pd.DataFrame(bar_enrollment_df.mean(axis=1).round(1), columns=['Enrollments'])
 
     print(bar_completion_df)
     print(bar_dropout_df)
     print(bar_enrollment_df)
 
-    bar_df = pd.concat([bar_completion_df, bar_dropout_df, bar_enrollment_df], axis=1)
+    bar_df = pd.merge(bar_completion_df, bar_dropout_df, on='Region', how='outer')
+    bar_df = pd.merge(bar_df, bar_enrollment_df, on='Region', how='outer')
 
     bar_df = bar_df.sort_values(by=educ_metric_selected, ascending=False)
 
@@ -334,7 +336,7 @@ def update_bar_chart(regions_selected, educ_level_selected, educ_metric_selected
 
             fig.update_layout(showlegend=False)
             fig.update_xaxes(autorange='reversed')
-            fig.update_layout(height=100, width=300, bargroupgap=0.15)
+            fig.update_layout(height=100, width=550, bargroupgap=0.15)
             fig.update_xaxes(visible=False)
             fig.update_yaxes(visible=False)
             fig.update_layout(margin=dict(l=130, r=15, t=15, b=15, pad=130))
@@ -385,7 +387,7 @@ def update_bar_chart(regions_selected, educ_level_selected, educ_metric_selected
 
         fig.update_layout(showlegend=False)
         fig.update_xaxes(autorange='reversed')
-        fig.update_layout(height=350, width=300, bargroupgap=0.15)
+        fig.update_layout(height=350, width=550, bargroupgap=0.15)
         fig.update_xaxes(visible=False)
         fig.update_yaxes(visible=False)
         fig.update_layout(margin=dict(l=15, r=15, t=15, b=15, pad=15))
