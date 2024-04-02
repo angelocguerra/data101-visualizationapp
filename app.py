@@ -60,7 +60,10 @@ app.layout = html.Div([
         # Filters Div
         dbc.Col(
             html.Div([
-                html.H3("Filters", style={'color': 'black'}),
+                html.Div([
+                    html.H3("Filters", style={'color': 'black'}),
+                    html.P("Reasons for this chart to exist blah blah...", style={'color': 'black', 'background-color': 'white', 'padding': '10px'}),
+                ]),
                 # Regions
                 html.Div([
                     html.Label('Select Region:', style={'color': 'black'}),  
@@ -111,7 +114,7 @@ app.layout = html.Div([
         # Line Chart
         dbc.Col(
             dcc.Loading(id="line-loading", children=dcc.Graph(id='line-chart')),
-            width=8
+            width=4
         ),
     ]),
 
@@ -119,20 +122,18 @@ app.layout = html.Div([
         # Bar Chart and Legends
         dbc.Col(
             html.Div([
-                html.H3("Bar chart", style={'color': 'black', 'background-color': 'white', 'padding': '10px'}),
-                html.P("Reasons for this chart to exist blah blah...", style={'color': 'black', 'background-color': 'white', 'padding': '10px'}),
-                html.Div([
-                    html.Div(style={'background-color': '#D5FBCB', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '5px'}),
-                    html.Label('Enrollments', style={'color': 'black'}),
-                ]),
-                html.Div([
-                    html.Div(style={'background-color': '#00E08F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '5px'}),
-                    html.Label('Completions', style={'color': 'black'}),
-                ]),
-                html.Div([
-                    html.Div(style={'background-color': '#23B37F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '5px'}),
-                    html.Label('Dropouts', style={'color': 'black'}),
-                ]),
+            
+                    html.H3("Bar chart", style={'color': 'white', 'padding-top': '10px'}),
+                    html.P("Reasons for this chart to exist blah blah...", style={'color': 'white', 'padding': '10px'}),
+                    html.Div(style={'background-color': '#00E08F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
+                    html.Label('Completions', style={'color': 'white'}),
+                    html.Div(style={'width': '10px', 'display': 'inline-block'}), 
+                    html.Div(style={'background-color': '#D5FBCB', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
+                    html.Label('Enrollments', style={'color': 'white'}),
+                    html.Div(style={'width': '10px', 'display': 'inline-block'}),  
+                    html.Div(style={'background-color': '#23B37F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
+                    html.Label('Dropouts', style={'color': 'white'}),
+                
                 dcc.Loading(id="bar-loading", children=[
                     dbc.Col(id='bar-chart-container')
                 ])
@@ -144,7 +145,7 @@ app.layout = html.Div([
         # Scatter Plot
         dbc.Col(
             dcc.Loading(id="scatter-loading", children=dcc.Graph(id='scatter-plot')),
-            width=8
+            width=4
         ),
     ]),
 
