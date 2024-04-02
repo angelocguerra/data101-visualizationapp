@@ -105,54 +105,46 @@ app.layout = html.Div([
                     )
                 ], style={'margin-bottom': '10px'}),
             ], style={"background-color": "#C3DCBC", "padding": "20px"}),
-            width=6
+            width=4
         ),
 
         # Line Chart
         dbc.Col(
             dcc.Loading(id="line-loading", children=dcc.Graph(id='line-chart')),
-            width=6
+            width=8
         ),
     ]),
 
     dbc.Row(children=[
-        # Bar Chart Card and Legends
+        # Bar Chart and Legends
         dbc.Col(
             html.Div([
-                dbc.Card(
-                    [
-                        dbc.CardHeader(html.H3("Bar chart", className="mb-0", style={'color': 'black', 'background-color': 'white'})),
-                        dbc.CardBody(
-                            [
-                                html.Div([
-                                    html.Div(style={'background-color': '#D5FBCB', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '5px'}),
-                                    html.Label('Enrollments', style={'color': 'black'}),
-                                ]),
-                                html.Div([
-                                    html.Div(style={'background-color': '#00E08F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '5px'}),
-                                    html.Label('Completions', style={'color': 'black'}),
-                                ]),
-                                html.Div([
-                                    html.Div(style={'background-color': '#23B37F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '5px'}),
-                                    html.Label('Dropouts', style={'color': 'black'}),
-                                ]),
-                            ]
-                        ),
-                    ],
-                    style={"margin-bottom": "10px"}
-                ),
+                html.H3("Bar chart", style={'color': 'black', 'background-color': 'white', 'padding': '10px'}),
+                html.P("Reasons for this chart to exist blah blah...", style={'color': 'black', 'background-color': 'white', 'padding': '10px'}),
+                html.Div([
+                    html.Div(style={'background-color': '#D5FBCB', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '5px'}),
+                    html.Label('Enrollments', style={'color': 'black'}),
+                ]),
+                html.Div([
+                    html.Div(style={'background-color': '#00E08F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '5px'}),
+                    html.Label('Completions', style={'color': 'black'}),
+                ]),
+                html.Div([
+                    html.Div(style={'background-color': '#23B37F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '5px'}),
+                    html.Label('Dropouts', style={'color': 'black'}),
+                ]),
                 dcc.Loading(id="bar-loading", children=[
                     dbc.Col(id='bar-chart-container')
                 ])
             ]),
-            width=6,
+            width=4,
             style={"background-color": "#446C37"}
         ),
 
         # Scatter Plot
         dbc.Col(
             dcc.Loading(id="scatter-loading", children=dcc.Graph(id='scatter-plot')),
-            width=6
+            width=8
         ),
     ]),
 
