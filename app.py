@@ -206,7 +206,7 @@ def update_line_chart(regions_selected, educ_level_selected, educ_metric_selecte
                   title=f'{educ_level_selected} {educ_metric_selected} Rates by Region',
                   labels={'index': 'Year', educ_metric_selected: educ_metric_selected},
                   color='Region',
-                  color_discrete_map={region: px.colors.qualitative.Plotly[i] for i, region in enumerate(regions_selected)}
+                  color_discrete_map={region: px.colors.qualitative.Light24[i] for i, region in enumerate(regions_selected)}
                  )
     
     return fig
@@ -264,7 +264,7 @@ def update_scatter_plot(regions_selected, educ_level_selected, educ_metric_selec
                      title=f'Poverty Incidence Rates and {educ_level_selected} {educ_metric_selected} Rates by Region',
                      labels={educ_metric_selected: educ_metric_selected, 'Poverty Incidence': 'Poverty Incidence'},
                      color='Region',
-                     color_discrete_map={region: px.colors.qualitative.Plotly[i] for i, region in enumerate(regions_selected)}
+                     color_discrete_map={region: px.colors.qualitative.Light24[i] for i, region in enumerate(regions_selected)}
                     )
     
     return fig
