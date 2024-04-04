@@ -66,7 +66,6 @@ app.layout = html.Div([
             html.Div([
                 html.Div([
                     html.H3("Filters", style={'color': 'black'}),
-                    html.P("Reasons for this chart to exist blah blah...", style={'color': 'black', 'background-color': 'white', 'padding': '10px'}),
                 ]),
                 # Regions
                 html.Div([
@@ -101,15 +100,17 @@ app.layout = html.Div([
                 
                 # Year
                 html.Div([
-                    html.Label('Select Year Range:', style={'color': 'black'}), 
-                    dcc.RangeSlider(
+                    html.Label('Select Year:', style={'color': 'black'}), 
+                    dcc.Slider(
                         id='year-slider',
                         min=min(years),
                         max=max(years),
-                        value=[min(years), max(years)],  
-                        marks={str(year): str(year) for year in years}, 
-                        step=None,  
+                        value=min(years),  
+                        marks={str(year): str(year) for year in years},
+                        included=False,
+                        step=1,  
                     )
+
                 ], style={'margin-bottom': '10px'}),
             ], style={"background-color": "#C3DCBC", "padding": "20px"}),
             width=4
@@ -273,19 +274,14 @@ def update_bar_chart(regions_selected, educ_level_selected, educ_metric_selected
     if not isinstance(regions_selected, list):
         regions_selected = [regions_selected]
 
-    years_range = list(range(years_selected[0], years_selected[1] + 1))
-    years_as_strings = [str(year) for year in years_range]
+    years_as_strings = [str(years_selected)]
 
-    print(regions_selected)
-    print(educ_level_selected)
-    print(educ_metric_selected)
-    print(years_as_strings)
-    
+
     bar_enrollment_df = pd.DataFrame()
     bar_completion_df  = pd.DataFrame()
     bar_dropout_df  = pd.DataFrame()
     bar_df = pd.DataFrame()
-    # Determine which dataset to use based on education level and metric
+
     if educ_level_selected == 'Secondary':
             bar_enrollment_df = secondary_enrollment.loc[regions_selected, years_as_strings ]
             bar_completion_df = secondary_completion.loc[regions_selected, years_as_strings ]
@@ -298,16 +294,11 @@ def update_bar_chart(regions_selected, educ_level_selected, educ_metric_selected
 
     bar_completion_df = pd.DataFrame(bar_completion_df)
     bar_completion_df = pd.DataFrame(bar_completion_df.mean(axis=1).round(1), columns=['Completions'])
-
     bar_dropout_df = pd.DataFrame(bar_dropout_df )
     bar_dropout_df = pd.DataFrame(bar_dropout_df.mean(axis=1).round(1), columns=['Dropouts'])
-
     bar_enrollment_df = pd.DataFrame(bar_enrollment_df)
     bar_enrollment_df = pd.DataFrame(bar_enrollment_df.mean(axis=1).round(1), columns=['Enrollments'])
-
-    print(bar_completion_df)
-    print(bar_dropout_df)
-    print(bar_enrollment_df)
+    
 
     bar_df = pd.merge(bar_completion_df, bar_dropout_df, on='Region', how='outer')
     bar_df = pd.merge(bar_df, bar_enrollment_df, on='Region', how='outer')
@@ -349,7 +340,7 @@ def update_bar_chart(regions_selected, educ_level_selected, educ_metric_selected
 
             fig.update_layout(showlegend=False)
             fig.update_xaxes(autorange='reversed')
-            fig.update_layout(height=100, width=550, bargroupgap=0.15)
+            fig.update_layout(bargroupgap=0.15)
             fig.update_xaxes(visible=False)
             fig.update_yaxes(visible=False)
             fig.update_layout(margin=dict(l=130, r=15, t=15, b=15, pad=130))
@@ -400,7 +391,7 @@ def update_bar_chart(regions_selected, educ_level_selected, educ_metric_selected
 
         fig.update_layout(showlegend=False)
         fig.update_xaxes(autorange='reversed')
-        fig.update_layout(height=350, width=550, bargroupgap=0.15)
+        fig.update_layout(bargroupgap=0.15)
         fig.update_xaxes(visible=False)
         fig.update_yaxes(visible=False)
         fig.update_layout(margin=dict(l=15, r=15, t=15, b=15, pad=15))
@@ -429,9 +420,14 @@ def update_graph(regions_selected, educ_level_selected, educ_metric_selected, ye
     return graph_list
 
 custom_color_scale = [
+<<<<<<< Updated upstream
     [0, '#D6E5D2'],
     [1, '#24361E'] 
       
+=======
+    [0, '#D6E5D2'], 
+    [1, '#24361E']   
+>>>>>>> Stashed changes
 ]
 
 
@@ -445,14 +441,14 @@ custom_color_scale = [
     ]
 )
 def update_choropleth_map(regions_selected, educ_level_selected, educ_metric_selected, years_selected):
-    
+
     if not isinstance(regions_selected, list):
         regions_selected = [regions_selected]
 
-
-    years_selected = [2006, 2015]  
-    years_range = list(range(years_selected[0], years_selected[1] + 1))
-    years_as_strings = [str(year) for year in years_range]
+    
+  
+    years_as_strings = str(years_selected)
+   
 
     if educ_level_selected == 'Secondary':
         if educ_metric_selected == 'Enrollments':
@@ -476,7 +472,7 @@ def update_choropleth_map(regions_selected, educ_level_selected, educ_metric_sel
     map_fig = px.choropleth_mapbox(geodf,
                                    geojson=geodf.geometry,
                                    locations=geodf.index,
-                                   color='2006',  
+                                   color=years_as_strings,  
                                    center={'lat': 12.099568, 'lon': 122.733168},
                                    zoom=4,
                                    color_continuous_scale=custom_color_scale)  
