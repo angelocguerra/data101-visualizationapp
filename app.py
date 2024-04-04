@@ -13,8 +13,6 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 
-import shapely
-
 
 from pathlib import Path
 
@@ -431,8 +429,9 @@ def update_graph(regions_selected, educ_level_selected, educ_metric_selected, ye
     return graph_list
 
 custom_color_scale = [
-    [0, '#24361E'], 
-    [1, '#D6E5D2']   
+    [0, '#D6E5D2'],
+    [1, '#24361E'] 
+      
 ]
 
 
