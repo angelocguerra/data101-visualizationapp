@@ -420,14 +420,8 @@ def update_graph(regions_selected, educ_level_selected, educ_metric_selected, ye
     return graph_list
 
 custom_color_scale = [
-<<<<<<< Updated upstream
-    [0, '#D6E5D2'],
-    [1, '#24361E'] 
-      
-=======
     [0, '#D6E5D2'], 
     [1, '#24361E']   
->>>>>>> Stashed changes
 ]
 
 
