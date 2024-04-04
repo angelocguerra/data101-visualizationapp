@@ -12,6 +12,10 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+
+import shapely
+
+
 from pathlib import Path
 
 # Set the Bootstrap theme
@@ -20,22 +24,22 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.MINTY])
 dataset_folder = Path('cleaned-datasets/')
 # Primary Completion Rates
 primary_completion = pd.read_csv(dataset_folder / 'Primary/' 'Primary_Completion_Rate_by_Region_and_Year.csv', index_col='Region')
-
+gpd_primary_completion = gpd.read_file(dataset_folder / 'Spatial/primary_completion.shp')
 # Primary Drop-out Rates
 primary_dropout = pd.read_csv(dataset_folder / 'Primary/' 'Primary_Drop-out_Rate_by_Region_and_Year.csv', index_col='Region')
-
+gpd_primary_dropout = gpd.read_file(dataset_folder / 'Spatial/primary_dropout.shp')
 # Primary Net Enrollment Rates
 primary_enrollment = pd.read_csv(dataset_folder / 'Primary/' 'Primary_Net_Enrollment_Rate_by_Region_and_Year.csv', index_col='Region')
-
+gpd_primary_enrollment  = gpd.read_file(dataset_folder / 'Spatial/primary_enrollment.shp')
 # Secondary Completion Rates
 secondary_completion = pd.read_csv(dataset_folder / 'Secondary/' 'Secondary_Completion_Rate_by_Region_and_Year.csv', index_col='Region')
-
+gpd_secondary_completion  = gpd.read_file(dataset_folder / 'Spatial/secondary_completion.shp')
 # Secondary Drop-out Rates
 secondary_dropout = pd.read_csv(dataset_folder / 'Secondary/' 'Secondary_Drop-out_Rate_by_Region_and_Year.csv', index_col='Region')
-
+gpd_secondary_dropout  = gpd.read_file(dataset_folder / 'Spatial/secondary_dropout.shp')
 # Secondary Net Enrollment Rates
 secondary_enrollment = pd.read_csv(dataset_folder / 'Secondary/' 'Secondary_Enrollment_Rate_by_Region_and_Year.csv', index_col='Region')
-
+gpd_secondary_enrollment  = gpd.read_file(dataset_folder / 'Spatial/secondary_enrollment.shp')
 # Poverty Incidence Rates
 poverty_incidence = pd.read_csv(dataset_folder / 'Interpolated_Poverty_Incidence_among_Population.csv', index_col='Region')
 
@@ -44,6 +48,8 @@ regions = ['NCR', 'Region I', 'Region II', 'Region III', 'Region IV-A', 'Region 
 education_levels = ['Primary', 'Secondary']
 education_metrics = ['Enrollments', 'Completions', 'Dropouts']
 years = list(range(2006, 2016))
+
+px.set_mapbox_access_token(open(dataset_folder/"mapbox/.mapbox_token").read())
 
 # Define layout
 app.layout = html.Div([
@@ -114,6 +120,11 @@ app.layout = html.Div([
         # Line Chart
         dbc.Col(
             dcc.Loading(id="line-loading", children=dcc.Graph(id='line-chart')),
+            width=4
+        ),
+        # Choropleth Map
+        dbc.Col(
+            dcc.Loading(id="choropleth-loading", children=dcc.Graph(id='choropleth-map')),
             width=4
         ),
     ]),
@@ -418,6 +429,63 @@ def update_graph(regions_selected, educ_level_selected, educ_metric_selected, ye
     fig_list = update_bar_chart(regions_selected, educ_level_selected, educ_metric_selected, years_selected)
     graph_list = [dcc.Graph(figure=fig) for fig in fig_list]
     return graph_list
+
+custom_color_scale = [
+    [0, '#24361E'], 
+    [1, '#D6E5D2']   
+]
+
+
+@app.callback(
+    Output('choropleth-map', 'figure'),
+    [
+        Input('region-dropdown', 'value'),
+        Input('education-level-dropdown', 'value'),
+        Input('education-metric-dropdown', 'value'),
+        Input('year-slider', 'value')
+    ]
+)
+def update_choropleth_map(regions_selected, educ_level_selected, educ_metric_selected, years_selected):
+    
+    if not isinstance(regions_selected, list):
+        regions_selected = [regions_selected]
+
+
+    years_selected = [2006, 2015]  
+    years_range = list(range(years_selected[0], years_selected[1] + 1))
+    years_as_strings = [str(year) for year in years_range]
+
+    if educ_level_selected == 'Secondary':
+        if educ_metric_selected == 'Enrollments':
+            filtered_data = gpd_secondary_enrollment
+        elif educ_metric_selected == 'Completions':
+            filtered_data = gpd_secondary_completion
+        elif educ_metric_selected == 'Dropouts':
+            filtered_data = gpd_secondary_dropout
+
+    elif educ_level_selected == 'Primary':
+        if educ_metric_selected == 'Enrollments':
+            filtered_data = gpd_primary_enrollment
+        elif educ_metric_selected == 'Completions':
+            filtered_data = gpd_primary_completion
+        elif educ_metric_selected == 'Dropouts':
+            filtered_data = gpd_primary_dropout
+    
+    filtered_data = filtered_data[filtered_data['Region'].isin(regions_selected)]
+    
+    geodf = filtered_data.set_index('Region')
+    map_fig = px.choropleth_mapbox(geodf,
+                                   geojson=geodf.geometry,
+                                   locations=geodf.index,
+                                   color='2006',  
+                                   center={'lat': 12.099568, 'lon': 122.733168},
+                                   zoom=4,
+                                   color_continuous_scale=custom_color_scale)  
+    
+    return map_fig
+
+
+
 
 # Run the app
 if __name__ == '__main__':
