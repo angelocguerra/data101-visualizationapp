@@ -122,7 +122,7 @@ app.layout = html.Div([
                 html.Div([
                 
                         html.H3("Bar chart", style={'color': 'white', 'padding-top': '10px'}),
-                        html.P("Reasons for this chart to exist blah blah...", style={'color': 'white', 'padding': '10px'}),
+                        html.P("Comparison of all educational metrics across different regions which are ranked according to the highest selected metric.", style={'color': 'white', 'padding': '10px'}),
                         html.Div(style={'background-color': '#00E08F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
                         html.Label('Completions', style={'color': 'white'}),
                         html.Div(style={'width': '10px', 'display': 'inline-block'}), 
