@@ -61,105 +61,110 @@ app.layout = html.Div([
     ),
 
     dbc.Row(children=[
-        # Filters Div
-        dbc.Col(
-            html.Div([
+        dbc.Col(width=3, children=[
+            # Filters Div
+            dbc.Row(
                 html.Div([
-                    html.H3("Filters", style={'color': 'black'}),
+                    html.Div([
+                        html.H3("Filters", style={'color': 'black'}),
+                    ]),
+                    # Regions
+                    html.Div([
+                        html.Label('Select Region:', style={'color': 'black'}),  
+                        dcc.Dropdown(
+                            id='region-dropdown',
+                            options=[{'label': region, 'value': region} for region in regions],
+                            value=regions[0],
+                            multi=True,
+                        ),
+                    ], style={'margin-bottom': '10px'}),
+                    
+                    # Education Level
+                    html.Div([
+                        html.Label('Select Education Level:', style={'color': 'black'}), 
+                        dcc.Dropdown(
+                            id='education-level-dropdown',
+                            options=[{'label': level, 'value': level} for level in education_levels],
+                            value=education_levels[0]
+                        ),
+                    ], style={'margin-bottom': '10px'}),
+                    
+                    # Education Metric
+                    html.Div([
+                        html.Label('Select Education Metric:', style={'color': 'black'}), 
+                        dcc.Dropdown(
+                            id='education-metric-dropdown',
+                            options=[{'label': metric, 'value': metric} for metric in education_metrics],
+                            value=education_metrics[0]
+                        ),
+                    ], style={'margin-bottom': '10px'}),
+                    
+                    # Year
+                    html.Div([
+                        html.Label('Select Year:', style={'color': 'black'}), 
+                        dcc.Slider(
+                            id='year-slider',
+                            min=min(years),
+                            max=max(years),
+                            value=min(years),  
+                            marks={str(year): str(year) for year in years},
+                            included=False,
+                            step=1,  
+                        )
+
+                    ], style={'margin-bottom': '10px'}),
+                ], style={"background-color": "#C3DCBC", "padding": "20px"}),
+               
+            ),
+
+            # Bar Chart and Legends
+            dbc.Row(
+                html.Div([
+                
+                        html.H3("Bar chart", style={'color': 'white', 'padding-top': '10px'}),
+                        html.P("Reasons for this chart to exist blah blah...", style={'color': 'white', 'padding': '10px'}),
+                        html.Div(style={'background-color': '#00E08F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
+                        html.Label('Completions', style={'color': 'white'}),
+                        html.Div(style={'width': '10px', 'display': 'inline-block'}), 
+                        html.Div(style={'background-color': '#D5FBCB', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
+                        html.Label('Enrollments', style={'color': 'white'}),
+                        html.Div(style={'width': '10px', 'display': 'inline-block'}),  
+                        html.Div(style={'background-color': '#23B37F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
+                        html.Label('Dropouts', style={'color': 'white'}),
+                    
+                    dcc.Loading(id="bar-loading", children=[
+                        dbc.Col(id='bar-chart-container')
+                    ])
                 ]),
-                # Regions
-                html.Div([
-                    html.Label('Select Region:', style={'color': 'black'}),  
-                    dcc.Dropdown(
-                        id='region-dropdown',
-                        options=[{'label': region, 'value': region} for region in regions],
-                        value=regions[0],
-                        multi=True,
-                    ),
-                ], style={'margin-bottom': '10px'}),
+               
+                style={"background-color": "#446C37"}
+            ),
+
+        ]),
+
+        dbc.Col(width=4, children=[
+            # Line Chart
+            dbc.Row(
+                dcc.Loading(id="line-loading", children=dcc.Graph(id='line-chart')),
                 
-                # Education Level
-                html.Div([
-                    html.Label('Select Education Level:', style={'color': 'black'}), 
-                    dcc.Dropdown(
-                        id='education-level-dropdown',
-                        options=[{'label': level, 'value': level} for level in education_levels],
-                        value=education_levels[0]
-                    ),
-                ], style={'margin-bottom': '10px'}),
-                
-                # Education Metric
-                html.Div([
-                    html.Label('Select Education Metric:', style={'color': 'black'}), 
-                    dcc.Dropdown(
-                        id='education-metric-dropdown',
-                        options=[{'label': metric, 'value': metric} for metric in education_metrics],
-                        value=education_metrics[0]
-                    ),
-                ], style={'margin-bottom': '10px'}),
-                
-                # Year
-                html.Div([
-                    html.Label('Select Year:', style={'color': 'black'}), 
-                    dcc.Slider(
-                        id='year-slider',
-                        min=min(years),
-                        max=max(years),
-                        value=min(years),  
-                        marks={str(year): str(year) for year in years},
-                        included=False,
-                        step=1,  
-                    )
+            ),
 
-                ], style={'margin-bottom': '10px'}),
-            ], style={"background-color": "#C3DCBC", "padding": "20px"}),
-            width=4
-        ),
+            # Scatter Plot
+            dbc.Row(
+                dcc.Loading(id="scatter-loading", children=dcc.Graph(id='scatter-plot')),
+            ),
+        ]),
 
-        # Line Chart
-        dbc.Col(
-            dcc.Loading(id="line-loading", children=dcc.Graph(id='line-chart')),
-            width=4
-        ),
-        # Choropleth Map
-        dbc.Col(
-            dcc.Loading(id="choropleth-loading", children=dcc.Graph(id='choropleth-map')),
-            width=4
-        ),
-    ]),
+        dbc.Col(children=[
+            # Choropleth Map
+            dbc.Row(
+                dcc.Loading(id="choropleth-loading", children=dcc.Graph(id='choropleth-map')),
+                style={'height': '800px'}
+            ),
+        ]),
 
-    dbc.Row(children=[
-        # Bar Chart and Legends
-        dbc.Col(
-            html.Div([
-            
-                    html.H3("Bar chart", style={'color': 'white', 'padding-top': '10px'}),
-                    html.P("Reasons for this chart to exist blah blah...", style={'color': 'white', 'padding': '10px'}),
-                    html.Div(style={'background-color': '#00E08F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
-                    html.Label('Completions', style={'color': 'white'}),
-                    html.Div(style={'width': '10px', 'display': 'inline-block'}), 
-                    html.Div(style={'background-color': '#D5FBCB', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
-                    html.Label('Enrollments', style={'color': 'white'}),
-                    html.Div(style={'width': '10px', 'display': 'inline-block'}),  
-                    html.Div(style={'background-color': '#23B37F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
-                    html.Label('Dropouts', style={'color': 'white'}),
-                
-                dcc.Loading(id="bar-loading", children=[
-                    dbc.Col(id='bar-chart-container')
-                ])
-            ]),
-            width=4,
-            style={"background-color": "#446C37"}
-        ),
-
-        # Scatter Plot
-        dbc.Col(
-            dcc.Loading(id="scatter-loading", children=dcc.Graph(id='scatter-plot')),
-            width=4
-        ),
-    ]),
-
-    html.Div(id='output-container', style={'margin-top': '20px'})
+        html.Div(id='output-container', style={'margin-top': '20px'})
+        ])
 ])
 
 
@@ -469,7 +474,9 @@ def update_choropleth_map(regions_selected, educ_level_selected, educ_metric_sel
                                    color=years_as_strings,  
                                    center={'lat': 12.099568, 'lon': 122.733168},
                                    zoom=4,
-                                   color_continuous_scale=custom_color_scale)  
+                                   color_continuous_scale=custom_color_scale,
+                                   height=1000,
+                                   width=650)  
     
     return map_fig
 
