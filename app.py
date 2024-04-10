@@ -40,6 +40,11 @@ regions = ['NCR', 'Region I', 'Region II', 'Region III', 'Region IV-A', 'Region 
 education_levels = ['Primary', 'Secondary']
 education_metrics = ['Enrollments', 'Completions', 'Dropouts']
 years = list(range(2006, 2016))
+choro_selected_regions = ''
+
+def hexToRgb(hex, opacity):
+    rgb_values = [int(hex[i:i+2], 16) for i in (0, 2, 4)]
+    return f'rgba({rgb_values[0]}, {rgb_values[1]}, {rgb_values[2]}, {opacity})'
 
 px.set_mapbox_access_token(open(dataset_folder / "mapbox/.mapbox_token").read())
 
@@ -159,6 +164,7 @@ app.layout = html.Div([
         dbc.Col(children=[
             # Choropleth Map
             html.Div([dcc.Loading(id="choropleth-loading", children=dcc.Graph(id='choropleth-map', style={'height': '94vh'}))]),
+            html.Div(id='output')
         ]),
     ], style={"height": "100%"})
 ], style={"height": "100vh", "display": "flex", "flex-flow": "column"})
@@ -320,9 +326,10 @@ def update_graph(regions_selected, educ_level_selected, educ_metric_selected, ye
         Input('region-dropdown', 'value'),
         Input('education-level-dropdown', 'value'),
         Input('education-metric-dropdown', 'value'),
+        Input('choropleth-map', 'clickData')
     ]
 )
-def update_line_chart_scatterplot(regions_selected, educ_level_selected, educ_metric_selected):
+def update_line_chart_scatterplot(regions_selected, educ_level_selected, educ_metric_selected, selected_region_choropleth):
     years_selected = [2006, 2015]  # Set default year range from 2006 to 2015
     years_range = list(range(years_selected[0], years_selected[1] + 1))
     years_as_strings = [str(year) for year in years_range]
@@ -357,6 +364,11 @@ def update_line_chart_scatterplot(regions_selected, educ_level_selected, educ_me
 
     combined_df = line_scatter_df.merge(poverty_df, on=['index', 'Region'])
 
+    opacity_values = [1.0] * len(regions_selected)
+    if selected_region_choropleth is not None:
+        print(selected_region_choropleth['points'][0]['location'], regions_selected)
+        opacity_values = [1.0 if region == selected_region_choropleth['points'][0]['location'] else 0.3 for region in regions_selected]
+    
     # Plotly express line chart
     line_fig = px.line(line_scatter_df,
                        x='index',
@@ -364,8 +376,7 @@ def update_line_chart_scatterplot(regions_selected, educ_level_selected, educ_me
                        title=f'{educ_level_selected} {educ_metric_selected} Rates by Region',
                        labels={'index': 'Year', educ_metric_selected: educ_metric_selected},
                        color='Region',
-                       color_discrete_map={region: px.colors.qualitative.Light24[i] for i, region in
-                                           enumerate(regions_selected)}
+                       color_discrete_map = {region: hexToRgb(px.colors.qualitative.Light24[i][1:], opacity_values[i]) for i, region in enumerate(regions_selected)}
                        )
 
     # Plotly express scatter plot
@@ -376,8 +387,7 @@ def update_line_chart_scatterplot(regions_selected, educ_level_selected, educ_me
                              labels={educ_metric_selected: educ_metric_selected,
                                      'Poverty Incidence': 'Poverty Incidence'},
                              color='Region',
-                             color_discrete_map={region: px.colors.qualitative.Light24[i] for i, region in
-                                                 enumerate(regions_selected)}
+                             color_discrete_map = {region: hexToRgb(px.colors.qualitative.Light24[i][1:], opacity_values[i]) for i, region in enumerate(regions_selected)}
                              )
 
     return line_fig, scatter_fig
@@ -429,10 +439,24 @@ def update_choropleth_map(regions_selected, educ_level_selected, educ_metric_sel
                                    color=years_as_strings,
                                    center={'lat': 12.099568, 'lon': 122.733168},
                                    zoom=4,
-                                   color_continuous_scale=custom_color_scale,)
+                                   color_continuous_scale=custom_color_scale,
+                                   range_color=(0,100))
 
     return map_fig
 
+@app.callback(
+    Output('output', 'children'),
+    [Input('choropleth-map', 'clickData')]
+)
+def display_click_data(clickData):
+    global choro_selected_regions
+    if clickData is not None:
+        region = clickData['points'][0]['location']
+        value = clickData['points'][0]['z']
+        choro_selected_regions = region
+        return f'You clicked on {region} with value {value}'
+    else:
+        return 'Click on a region to see its value'
 
 # Run the app
 if __name__ == '__main__':
