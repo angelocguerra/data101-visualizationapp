@@ -164,7 +164,7 @@ app.layout = html.Div([
         dbc.Col(children=[
             # Choropleth Map
             html.Div([dcc.Loading(id="choropleth-loading", children=dcc.Graph(id='choropleth-map', style={'height': '94vh'}))]),
-            html.Div(id='output')
+            
         ]),
     ], style={"height": "100%"})
 ], style={"height": "100vh", "display": "flex", "flex-flow": "column"})
@@ -444,19 +444,7 @@ def update_choropleth_map(regions_selected, educ_level_selected, educ_metric_sel
 
     return map_fig
 
-@app.callback(
-    Output('output', 'children'),
-    [Input('choropleth-map', 'clickData')]
-)
-def display_click_data(clickData):
-    global choro_selected_regions
-    if clickData is not None:
-        region = clickData['points'][0]['location']
-        value = clickData['points'][0]['z']
-        choro_selected_regions = region
-        return f'You clicked on {region} with value {value}'
-    else:
-        return 'Click on a region to see its value'
+
 
 # Run the app
 if __name__ == '__main__':
