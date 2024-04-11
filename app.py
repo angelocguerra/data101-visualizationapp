@@ -130,16 +130,16 @@ app.layout = html.Div([
 
                 # Title Legends
                 html.Div([
-                    html.P("Bar chart", style={'color': 'white'}),
-                    html.P("Comparison of all educational metrics across different regions which are ranked according to the highest selected metric.", style={'color': 'white', 'font-size': '0.75rem'}),
+                    html.P("Bar chart", style={'color': 'black'}),
+                    html.P("Comparison of all educational metrics across different regions which are ranked according to the highest selected metric.", style={'color': 'black', 'font-size': '0.75rem'}),
                     html.Div(style={'background-color': '#00E08F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
-                    html.Label('Completions', style={'color': 'white'}),
+                    html.Label('Completions', style={'color': 'black'}),
                     html.Div(style={'width': '10px', 'display': 'inline-block'}),
                     html.Div(style={'background-color': '#D5FBCB', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
-                    html.Label('Enrollments', style={'color': 'white'}),
+                    html.Label('Enrollments', style={'color': 'black'}),
                     html.Div(style={'width': '10px', 'display': 'inline-block'}),
                     html.Div(style={'background-color': '#23B37F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
-                    html.Label('Dropouts', style={'color': 'white'}),
+                    html.Label('Dropouts', style={'color': 'black'}),
                 ]),
 
                 # Bar Chart
