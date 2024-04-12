@@ -130,7 +130,7 @@ app.layout = html.Div([
                 # Title Legends
                 html.Div([
                     html.Div([
-                        html.P("Bar Chart", style={'color': 'black', 'font-family': 'Sansation Regular', 'margin-bottom': '0.5rem'}),
+                        html.P("Bar Chart", style={'color': 'black', 'font-family': 'Sansation Bold', 'margin-bottom': '0.5rem'}),
                         html.P("Comparison of all educational metrics across different regions which are ranked according to the highest selected metric.", style={'color': 'black', 'font-size': '0.7rem', 'font-family': 'Sansation Regular'}),
                         html.Div([
                             html.Div([
