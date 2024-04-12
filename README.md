@@ -26,7 +26,7 @@ conda install conda-forge::dash-bootstrap-components
 conda install anaconda::pandas
 conda install plotly::plotly
 ```
-It is also advised that the fonts inside the `fonts` directory be installed to your local machines to render their styles.
+It is also advised that the fonts inside the `fonts` directory be installed to your local machines to render their styles.<br>
 Once you have installed the dependencies, you can run the program by typing the following command into the terminal:
 ```
 python app.py
