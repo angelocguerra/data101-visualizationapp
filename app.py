@@ -41,10 +41,6 @@ education_levels = ['Primary', 'Secondary']
 education_metrics = ['Enrollments', 'Completions', 'Dropouts']
 years = list(range(2006, 2016))
 
-def hexToRgb(hex, opacity):
-    rgb_values = [int(hex[i:i+2], 16) for i in (0, 2, 4)]
-    return f'rgba({rgb_values[0]}, {rgb_values[1]}, {rgb_values[2]}, {opacity})'
-
 px.set_mapbox_access_token(open(dataset_folder / "mapbox/.mapbox_token").read())
 
 # Define layout
@@ -75,7 +71,7 @@ app.layout = html.Div([
                 # Regions
                 html.Div([
                     html.Label('Select Region/s:',
-                               style={'color': 'black', "font-family": "Sansation Regular", "font-size": "0.85rem"}),
+                               style={'color': 'black', "font-family": "Sansation Regular", "font-size": "0.8rem"}),
                     dcc.Dropdown(
                         id='region-dropdown',
                         options=[{'label': region, 'value': region} for region in regions],
@@ -84,12 +80,12 @@ app.layout = html.Div([
                         className="dropdown-region",
                         style={"font-family": "Sansation Regular", "font-size": "0.95rem"}
                     ),
-                ], style={'margin-bottom': '10px'}),
+                ], style={'margin-bottom': '5px'}),
 
                 # Education Level
                 html.Div([
                     html.Label('Select Education Level:',
-                               style={'color': 'black', "font-family": "Sansation Regular", "font-size": "0.85rem"}),
+                               style={'color': 'black', "font-family": "Sansation Regular", "font-size": "0.8rem"}),
                     dcc.Dropdown(
                         id='education-level-dropdown',
                         options=[{'label': level, 'value': level} for level in education_levels],
@@ -97,12 +93,12 @@ app.layout = html.Div([
                         className="dropdown-level",
                         style={"font-family": "Sansation Regular", "font-size": "0.95rem"}
                     ),
-                ], style={'margin-bottom': '10px'}),
+                ], style={'margin-bottom': '5px'}),
 
                 # Education Metric
                 html.Div([
                     html.Label('Select Education Metric:',
-                               style={'color': 'black', "font-family": "Sansation Regular", "font-size": "0.85rem"}),
+                               style={'color': 'black', "font-family": "Sansation Regular", "font-size": "0.8rem"}),
                     dcc.Dropdown(
                         id='education-metric-dropdown',
                         options=[{'label': metric, 'value': metric} for metric in education_metrics],
@@ -110,7 +106,7 @@ app.layout = html.Div([
                         className="dropdown-metric",
                         style={"font-family": "Sansation Regular", "font-size": "0.95rem"}
                     ),
-                ], style={'margin-bottom': '10px'}),
+                ], style={'margin-bottom': '5px'}),
 
                 # Year
                 html.Div([
@@ -122,6 +118,10 @@ app.layout = html.Div([
                         max=max(years),
                         value=min(years),
                         marks={str(year): str(year) for year in years},
+                        tooltip={
+                            "placement": "bottom",
+                            "always_visible": True,
+                        },
                         included=False,
                         step=1,
                     )
@@ -129,24 +129,34 @@ app.layout = html.Div([
 
                 # Title Legends
                 html.Div([
-                    html.P("Bar chart", style={'color': 'black'}),
-                    html.P("Comparison of all educational metrics across different regions which are ranked according to the highest selected metric.", style={'color': 'black', 'font-size': '0.75rem'}),
-                    html.Div(style={'background-color': '#00E08F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
-                    html.Label('Completions', style={'color': 'black'}),
-                    html.Div(style={'width': '10px', 'display': 'inline-block'}),
-                    html.Div(style={'background-color': '#D5FBCB', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
-                    html.Label('Enrollments', style={'color': 'black'}),
-                    html.Div(style={'width': '10px', 'display': 'inline-block'}),
-                    html.Div(style={'background-color': '#23B37F', 'height': '20px', 'width': '20px', 'display': 'inline-block', 'margin-right': '10px'}),
-                    html.Label('Dropouts', style={'color': 'black'}),
-                ]),
+                    html.Div([
+                        html.P("Bar Chart", style={'color': 'black', 'font-family': 'Sansation Regular', 'margin-bottom': '0.5rem'}),
+                        html.P("Comparison of all educational metrics across different regions which are ranked according to the highest selected metric.", style={'color': 'black', 'font-size': '0.7rem', 'font-family': 'Sansation Regular'}),
+                        html.Div([
+                            html.Div([
+                                html.Div(style={'background-color': '#D5FBCB', 'height': '15px', 'width': '15px', 'display': 'inline-block', 'margin-right': '10px'}),
+                                html.Label('Enrollments', style={'color': 'black', 'font-family': 'Sansation Regular', 'font-size': '0.8rem'}),
+                            ], style={"display": "flex", "align-items": "center", "margin-right": "10px"}),
+
+                            html.Div([
+                                html.Div(style={'background-color': '#00E08F', 'height': '15px', 'width': '15px', 'display': 'inline-block', 'margin-right': '10px'}),
+                                html.P('Completions', style={'color': 'black', 'font-family': 'Sansation Regular', 'font-size': '0.8rem', 'margin-bottom': 0}),
+                            ], style={"display": "flex", "align-items": "center", "margin-right": "10px"}),
+
+                            html.Div([
+                                html.Div(style={'background-color': '#23B37F', 'height': '15px', 'width': '15px', 'display': 'inline-block', 'margin-right': '10px'}),
+                                html.Label('Dropouts', style={'color': 'black', 'font-family': 'Sansation Regular', 'font-size': '0.8rem'}),
+                            ], style={"display": "flex", "align-items": "center", "margin-right": "10px"}),
+                        ]),
+                    ], style={'background-color': '#8AC278', 'padding': '1rem', 'border-radius': '1rem'}),
+                ], style={'margin-top': '5px'}),
 
                 # Bar Chart
                 html.Div([
                     dcc.Loading(id="bar-loading", children=[
                         # html.Div(id='bar-chart-container')
                         html.Div(id='bar-chart-container', className="barchart",
-                                 style={"height": "250px", "overflow": "scroll", "background-color": "#446C37"})
+                                 style={"height": "175px", "overflow": "scroll", "background-color": "#446C37"})
                     ])
                 ], className="bar-chart", style={})
             ]),
@@ -155,17 +165,17 @@ app.layout = html.Div([
         # Line Chart and Scatterplot
         dbc.Col(children=[
             # Line Chart
-            html.Div([dcc.Loading(id="line-loading", children=dcc.Graph(id='line-chart', style={'height': '47vh'}))]),
+            dbc.Card(html.Div([dcc.Loading(id="line-loading", children=dcc.Graph(id='line-chart', style={'height': '45vh'}))]), style={'margin-bottom': '1rem', 'margin-top': '1rem'}),
             # Scatterplot
-            html.Div([dcc.Loading(id="scatter-loading", children=dcc.Graph(id='scatter-plot', style={'height': '47vh'}))])
+            dbc.Card(html.Div([dcc.Loading(id="scatter-loading", children=dcc.Graph(id='scatter-plot', style={'height': '45vh'}))]))
         ]),
 
         dbc.Col(children=[
             # Choropleth Map
-            html.Div([dcc.Loading(id="choropleth-loading", children=dcc.Graph(id='choropleth-map', style={'height': '94vh'}))]),
-            html.Div([dbc.Button("Reset Highlights", color="secondary", id="resetHighlights")], className="d-grid gap-2")
+            html.Div([dcc.Loading(id="choropleth-loading", children=dcc.Graph(id='choropleth-map', style={'height': '90vh'}))]),
+            html.Div([dbc.Button("Reset Highlights", id="resetHighlights", style={'background-color': '#76C585', 'border': 'none'})], className="d-grid gap-2 mt-1")
         ]),
-    ], style={"height": "100%"})
+    ], style={"height": "100%", "width": "100%"})
 ], style={"height": "100vh", "display": "flex", "flex-flow": "column"})
 
 
@@ -286,7 +296,7 @@ def update_bar_chart(regions_selected, educ_level_selected, educ_metric_selected
                              textposition='auto')
                       )
 
-        fig.update_layout(height=250)
+        fig.update_layout(height=175)
         fig.update_layout(showlegend=False)
         fig.update_xaxes(autorange='reversed')
         fig.update_layout(bargroupgap=0.15)
@@ -326,7 +336,7 @@ def update_graph(regions_selected, educ_level_selected, educ_metric_selected, ye
         Input('education-level-dropdown', 'value'),
         Input('education-metric-dropdown', 'value'),
         Input('choropleth-map', 'clickData'),
-        
+
     ]
 )
 def update_line_chart_scatterplot(regions_selected, educ_level_selected, educ_metric_selected, selected_region_choropleth):
@@ -372,6 +382,25 @@ def update_line_chart_scatterplot(regions_selected, educ_level_selected, educ_me
         print(selected_region_choropleth['points'][0]['location'], regions_selected)
         opacity_values = [1.0 if region == selected_region_choropleth['points'][0]['location'] else 0.3 for region in regions_selected]
 
+    color_discrete_map = {
+        "NCR": "#47bcc4",
+        "Region I": "#003f5c",
+        "Region II": "#2f4b7c",
+        "Region III": "#665191",
+        "Region IV-A": "#a05195",
+        "Region IV-B": "#c2c2ff",
+        "Region V": "#ff7c43",
+        "Region VI": "#ffa600",
+        "Region VII": "#ffbf99",
+        "Region VIII": "#9fbfdf",
+        "Region IX": "#54738d",
+        "Region X": "#37618a",
+        "Region XI": "#2a4858",
+        "Region XII": "#1e3230",
+        "CAR": "#7a9eb1",
+        "Caraga": "#0f1f1c",
+        "ARMM": "#f95d6a"
+    }
 
     # Plotly express line chart
     line_fig = px.line(line_scatter_df,
@@ -380,19 +409,35 @@ def update_line_chart_scatterplot(regions_selected, educ_level_selected, educ_me
                        title=f'{educ_level_selected} {educ_metric_selected} Rates by Region',
                        labels={'index': 'Year', educ_metric_selected: educ_metric_selected},
                        color='Region',
-                       color_discrete_map = {region: hexToRgb(px.colors.qualitative.Light24[i][1:], opacity_values[i]) for i, region in enumerate(regions_selected)}
+                       color_discrete_map=color_discrete_map,
+                       template='plotly_white'
                        )
+
+    line_fig.update_layout(
+        font_family="Sansation Regular",
+        font_color="black",
+        title_font_family="Sansation Bold",
+        title_font_color="#333333"
+    )
 
     # Plotly express scatter plot
     scatter_fig = px.scatter(combined_df,
                              x=educ_metric_selected,
                              y='Poverty Incidence',
-                             title=f'Poverty Incidence Rates and {educ_level_selected} {educ_metric_selected} Rates by Region',
+                             title=f'Poverty Incidence Rates and {educ_level_selected}<br>{educ_metric_selected} Rates by Region',
                              labels={educ_metric_selected: educ_metric_selected,
                                      'Poverty Incidence': 'Poverty Incidence'},
                              color='Region',
-                             color_discrete_map = {region: hexToRgb(px.colors.qualitative.Light24[i][1:], opacity_values[i]) for i, region in enumerate(regions_selected)}
+                             color_discrete_map=color_discrete_map,
+                             template='plotly_white'
                              )
+
+    scatter_fig.update_layout(
+        font_family="Sansation Regular",
+        font_color="black",
+        title_font_family="Sansation Bold",
+        title_font_color="#333333"
+    )
 
     return line_fig, scatter_fig
 
@@ -444,9 +489,17 @@ def update_choropleth_map(regions_selected, educ_level_selected, educ_metric_sel
                                    center={'lat': 12.099568, 'lon': 122.733168},
                                    zoom=4,
                                    color_continuous_scale=custom_color_scale,
-                                   range_color=(0,100))
+                                   range_color=(0, 100))
+
+    map_fig.update_layout(
+        font_family="Sansation Regular",
+        font_color="black",
+        margin=dict(t=0, b=0, r=100, l=0)
+    )
 
     return map_fig
+
+
 @app.callback(
     Output('choropleth-map', 'clickData'),
     [Input('resetHighlights', 'n_clicks')]
@@ -455,6 +508,7 @@ def reset_clickdata(nclick):
     if nclick is not None and nclick > 0:
         return None  # Reset click data to None
     return dash.no_update
+
 
 # Run the app
 if __name__ == '__main__':
