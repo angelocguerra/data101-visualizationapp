@@ -118,10 +118,6 @@ app.layout = html.Div([
                         max=max(years),
                         value=min(years),
                         marks={str(year): str(year) for year in years},
-                        tooltip={
-                            "placement": "bottom",
-                            "always_visible": True,
-                        },
                         included=False,
                         step=1,
                     )
