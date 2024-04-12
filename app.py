@@ -40,7 +40,6 @@ regions = ['NCR', 'Region I', 'Region II', 'Region III', 'Region IV-A', 'Region 
 education_levels = ['Primary', 'Secondary']
 education_metrics = ['Enrollments', 'Completions', 'Dropouts']
 years = list(range(2006, 2016))
-choro_selected_regions = ''
 
 def hexToRgb(hex, opacity):
     rgb_values = [int(hex[i:i+2], 16) for i in (0, 2, 4)]
@@ -164,7 +163,7 @@ app.layout = html.Div([
         dbc.Col(children=[
             # Choropleth Map
             html.Div([dcc.Loading(id="choropleth-loading", children=dcc.Graph(id='choropleth-map', style={'height': '94vh'}))]),
-            
+            html.Div([dbc.Button("Reset Highlights", color="secondary", id="resetHighlights")], className="d-grid gap-2")
         ]),
     ], style={"height": "100%"})
 ], style={"height": "100vh", "display": "flex", "flex-flow": "column"})
@@ -326,7 +325,8 @@ def update_graph(regions_selected, educ_level_selected, educ_metric_selected, ye
         Input('region-dropdown', 'value'),
         Input('education-level-dropdown', 'value'),
         Input('education-metric-dropdown', 'value'),
-        Input('choropleth-map', 'clickData')
+        Input('choropleth-map', 'clickData'),
+        
     ]
 )
 def update_line_chart_scatterplot(regions_selected, educ_level_selected, educ_metric_selected, selected_region_choropleth):
@@ -364,11 +364,15 @@ def update_line_chart_scatterplot(regions_selected, educ_level_selected, educ_me
 
     combined_df = line_scatter_df.merge(poverty_df, on=['index', 'Region'])
 
+    # Changing the opacity of data points
+    # Set default all data points opaque
     opacity_values = [1.0] * len(regions_selected)
+    # Set opacity of selected region to 1 and other regions to 0.3
     if selected_region_choropleth is not None:
         print(selected_region_choropleth['points'][0]['location'], regions_selected)
         opacity_values = [1.0 if region == selected_region_choropleth['points'][0]['location'] else 0.3 for region in regions_selected]
-    
+
+
     # Plotly express line chart
     line_fig = px.line(line_scatter_df,
                        x='index',
@@ -443,8 +447,14 @@ def update_choropleth_map(regions_selected, educ_level_selected, educ_metric_sel
                                    range_color=(0,100))
 
     return map_fig
-
-
+@app.callback(
+    Output('choropleth-map', 'clickData'),
+    [Input('resetHighlights', 'n_clicks')]
+)
+def reset_clickdata(nclick):
+    if nclick is not None and nclick > 0:
+        return None  # Reset click data to None
+    return dash.no_update
 
 # Run the app
 if __name__ == '__main__':
