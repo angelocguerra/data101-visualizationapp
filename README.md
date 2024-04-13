@@ -10,6 +10,7 @@ The following dependencies are needed to run this program:
 - Dash Bootstrap Components
 - Pandas
 - Plotly
+- Geopandas
 
 You can install these dependencies using the following commands:
 #### Install from PyPi
