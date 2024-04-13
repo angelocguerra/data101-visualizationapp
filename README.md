@@ -18,6 +18,7 @@ pip install dash
 pip install dash-bootstrap-components
 pip install pandas
 pip install plotly
+pip install geopandas
 ```
 #### Install with Anaconda
 ```
@@ -25,6 +26,7 @@ conda install conda-forge::dash
 conda install conda-forge::dash-bootstrap-components
 conda install anaconda::pandas
 conda install plotly::plotly
+conda install geopandas
 ```
 It is also advised that the fonts inside the `fonts` directory be installed to your local machines to render their styles.<br>
 Once you have installed the dependencies, you can run the program by typing the following command into the terminal:
