@@ -1,5 +1,7 @@
 dash==2.16.1
-dash-bootstrap-components
-pandas
-plotly
-geopandas
+dash-bootstrap-components==1.6.0
+geopandas==0.14.3
+numpy==1.26.4
+pandas==2.2.2
+plotly==5.21.0
+shapely==2.0.4
