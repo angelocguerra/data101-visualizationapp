@@ -12,6 +12,7 @@ from pathlib import Path
 
 # Set Bootstrap theme
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], title="Philippine Education Dashboard")
+server = app.server
 
 dataset_folder = Path('cleaned-datasets/')
 # Primary Completion Rates
