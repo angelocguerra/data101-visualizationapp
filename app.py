@@ -42,6 +42,53 @@ education_levels = ['Primary', 'Secondary']
 education_metrics = ['Enrollments', 'Completions', 'Dropouts']
 years = list(range(2006, 2016))
 
+
+def hexWithOpacity(region, opacity):
+    rgba = "rgba(0,0,0,1)"
+
+    # Color Discrete Mapping
+    match region:
+        case "NCR":
+            rgba = "rgba(71, 188, 196, "
+        case "Region I":
+            rgba = "rgba(0,63,92, "
+        case "Region II":
+            rgba = "rgba(47, 75, 124, "
+        case "Region III":
+            rgba = "rgba(102, 81, 145, "
+        case "Region IV-A":
+            rgba = "rgba(160, 81, 149, "
+        case "Region IV-B":
+            rgba = "rgba(194, 194, 255, "
+        case "Region V":
+            rgba = "rgba(255, 124, 67, "
+        case "Region VI":
+            rgba = "rgba(255, 166, 0, "
+        case "Region VII":
+            rgba = "rgba(255, 191, 153, "
+        case "Region VIII":
+            rgba = "rgba(159, 191, 223, "
+        case "Region IX":
+            rgba = "rgba(84, 115, 141, "
+        case "Region X":
+            rgba = "rgba(55, 97, 138, "
+        case "Region XI":
+            rgba = "rgba(42, 72, 88, "
+        case "Region XII":
+            rgba = "rgba(30, 50, 48, "
+        case "CAR":
+            rgba = "rgba(122, 158, 177, "
+        case "Caraga":
+            rgba = "rgba(15, 31, 28, "
+        case "ARMM":
+            rgba = "rgba(249, 93, 106, "
+
+    if opacity == 1:
+        return rgba + "1)"
+    elif opacity == 0.3:
+        return rgba + "0.30)"
+
+
 px.set_mapbox_access_token(open(".mapbox_token").read())
 
 # Define layout
@@ -128,7 +175,8 @@ app.layout = html.Div([
                 html.Div([
                     html.Div([
                         html.P("Bar Chart", style={'color': 'black', 'font-family': 'Sansation Bold', 'margin-bottom': '0.5rem'}),
-                        html.P("Comparison of all educational metrics across different regions which are ranked according to the highest selected metric.", style={'color': 'black', 'font-size': '0.7rem', 'font-family': 'Sansation Regular'}),
+                        html.P("Comparison of all educational metrics across different regions which are ranked according to the highest selected metric.",
+                               style={'color': 'black', 'font-size': '0.7rem', 'font-family': 'Sansation Regular'}),
                         html.Div([
                             html.Div([
                                 html.Div(style={'background-color': '#D5FBCB', 'height': '15px', 'width': '15px', 'display': 'inline-block', 'margin-right': '10px'}),
@@ -145,15 +193,14 @@ app.layout = html.Div([
                                 html.Label('Dropouts', style={'color': 'black', 'font-family': 'Sansation Regular', 'font-size': '0.8rem'}),
                             ], style={"display": "flex", "align-items": "center", "margin-right": "10px"}),
                         ]),
-                    ], style={'background-color': '#8AC278', 'padding': '1rem', 'border-radius': '1rem'}),
+                    ], style={'background-color': '#8AC278', 'padding': '1rem', 'border-radius': '0.7rem 0.7rem 0rem 0rem'}),
                 ], style={'margin-top': '5px'}),
 
                 # Bar Chart
                 html.Div([
                     dcc.Loading(id="bar-loading", children=[
-                        # html.Div(id='bar-chart-container')
                         html.Div(id='bar-chart-container', className="barchart",
-                                 style={"height": "175px", "overflow": "scroll", "background-color": "#446C37"})
+                                 style={"height": "175px", "overflow": "scroll", "background-color": "#446C37", 'border-radius': '0rem 0rem 0.7rem 0.7rem'})
                     ])
                 ], className="bar-chart", style={})
             ]),
@@ -170,7 +217,7 @@ app.layout = html.Div([
         dbc.Col(children=[
             # Choropleth Map
             html.Div([dcc.Loading(id="choropleth-loading", children=dcc.Graph(id='choropleth-map', style={'height': '90vh'}))]),
-            html.Div([dbc.Button("Reset Highlights", id="resetHighlights", style={'background-color': '#76C585', 'border': 'none'})], className="d-grid gap-2 mt-1")
+            html.Div([dbc.Button("Reset Highlights", id="resetHighlights", style={'background-color': '#8AC278', 'border': 'none', "font-family": "Sansation Regular"})], className="d-grid gap-2 mt-1")
         ]),
     ], style={"height": "100%", "width": "100%"})
 ], style={"height": "100vh", "display": "flex", "flex-flow": "column"})
@@ -375,29 +422,8 @@ def update_line_chart_scatterplot(regions_selected, educ_level_selected, educ_me
     # Set default all data points opaque
     opacity_values = [1.0] * len(regions_selected)
     # Set opacity of selected region to 1 and other regions to 0.3
-    if selected_region_choropleth is not None:
-        print(selected_region_choropleth['points'][0]['location'], regions_selected)
+    if selected_region_choropleth:
         opacity_values = [1.0 if region == selected_region_choropleth['points'][0]['location'] else 0.3 for region in regions_selected]
-
-    color_discrete_map = {
-        "NCR": "#47bcc4",
-        "Region I": "#003f5c",
-        "Region II": "#2f4b7c",
-        "Region III": "#665191",
-        "Region IV-A": "#a05195",
-        "Region IV-B": "#c2c2ff",
-        "Region V": "#ff7c43",
-        "Region VI": "#ffa600",
-        "Region VII": "#ffbf99",
-        "Region VIII": "#9fbfdf",
-        "Region IX": "#54738d",
-        "Region X": "#37618a",
-        "Region XI": "#2a4858",
-        "Region XII": "#1e3230",
-        "CAR": "#7a9eb1",
-        "Caraga": "#0f1f1c",
-        "ARMM": "#f95d6a"
-    }
 
     # Plotly express line chart
     line_fig = px.line(line_scatter_df,
@@ -406,7 +432,7 @@ def update_line_chart_scatterplot(regions_selected, educ_level_selected, educ_me
                        title=f'{educ_level_selected} {educ_metric_selected} Rates by Region',
                        labels={'index': 'Year', educ_metric_selected: educ_metric_selected},
                        color='Region',
-                       color_discrete_map=color_discrete_map,
+                       color_discrete_map={region: hexWithOpacity(region, opacity_values[i]) for i, region in enumerate(regions_selected)},
                        template='plotly_white'
                        )
 
@@ -425,7 +451,7 @@ def update_line_chart_scatterplot(regions_selected, educ_level_selected, educ_me
                              labels={educ_metric_selected: educ_metric_selected,
                                      'Poverty Incidence': 'Poverty Incidence'},
                              color='Region',
-                             color_discrete_map=color_discrete_map,
+                             color_discrete_map={region: hexWithOpacity(region, opacity_values[i]) for i, region in enumerate(regions_selected)},
                              template='plotly_white'
                              )
 
