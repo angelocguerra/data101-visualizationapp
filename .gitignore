@@ -1,5 +1,10 @@
 # OS X stuff
-*.DS_Store
+.DS_Store
 
 # PyCharm
 *.idea
+
+# Anaconda
+.conda
+
+*.mapbox_token

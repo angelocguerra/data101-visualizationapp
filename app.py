@@ -42,7 +42,7 @@ education_levels = ['Primary', 'Secondary']
 education_metrics = ['Enrollments', 'Completions', 'Dropouts']
 years = list(range(2006, 2016))
 
-px.set_mapbox_access_token(open(dataset_folder / "mapbox/.mapbox_token").read())
+px.set_mapbox_access_token(open(".mapbox_token").read())
 
 # Define layout
 app.layout = html.Div([
